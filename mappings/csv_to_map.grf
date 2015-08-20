@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?><Graph __version="3.5.0" author="861322" created="Wed Jul 22 17:38:53 BST 2015" description="CSV To Map" guiVersion="3.4.4.P" id="1437583372733" licenseCode="Unlicensed" licenseType="Unknown" modified="Wed Jul 22 17:38:53 BST 2015" modifiedBy="861322" name="CSV_To_Map" preview-file="D:/Naveen K Reddy/MnS/IDC/MULE/Others/InputFile.csv" revision="1.0" showComponentDetails="false">
+<Global>
+<Metadata __referenceCounter="1" _dataStructure="SINGLE_DIMENSIONAL_COLLECTION" _type="Input" id="734c3ec1-cae4-49e4-8c8f-ebf80cbbbda9">
+<Record fieldDelimiter="," name="InputFile" recordDelimiter="\n\\|\r\n\\|\r" type="delimited">
+<Field containerType="SINGLE" label="Id" name="Id" size="10" type="string"/>
+<Field containerType="SINGLE" label="Name" name="Name" size="10" type="string"/>
+<Field containerType="SINGLE" label="Address" name="Address" size="10" type="string"/>
+<Field containerType="SINGLE" eofAsDelimiter="true" label="Phone" name="Phone" size="10" type="string"/>
+<Field __artificialType="_id" auto_filling="global_row_count" name="__id" type="long"/>
+</Record>
+</Metadata>
+<Metadata __index="0" __referenceCounter="1" __sourcePath="{}/mapMetadata" _dataStructure="SINGLE_DIMENSIONAL_COLLECTION" _id="__id" _type="Output" id="c88df77d-b653-4026-82c5-aa2fbaaeb5a8">
+<Record fieldDelimiter="," name="mapMetadata" recordDelimiter="\n\\|\r\n\\|\r" type="delimited">
+<Field __artificialType="_id" __systemManaged="true" name="__id" type="string"/>
+<Field __index="0" __sourcePath="{}/mapMetadata/Id" containerType="SINGLE" label="Id" name="Id" type="integer"/>
+<Field __index="1" __sourcePath="{}/mapMetadata/Name" containerType="SINGLE" label="Name" name="Name" type="string"/>
+<Field __index="2" __sourcePath="{}/mapMetadata/Address" containerType="SINGLE" label="Address" name="Address" type="string"/>
+<Field __index="3" __sourcePath="{}/mapMetadata/Phone" containerType="SINGLE" label="Phone" name="Phone" type="integer"/>
+</Record>
+</Metadata>
+<Dictionary>
+<Entry id="DictionaryEntry0" input="true" name="inputPayload" output="false" type="object"/>
+<Entry id="DictionaryEntry1" input="false" name="outputPayload" output="true" type="object"/>
+</Dictionary>
+</Global>
+<Phase number="0">
+<Node charset="UTF-8" enabled="enabled" fileURL="dict:inputPayload" guiName="CSV READER" guiX="20" guiY="20" id="DATA_READER0" quoteCharacter="both" quotedStrings="true" skipRows="1" trim="true" type="DATA_READER">
+<attr name="_data_format"><![CDATA[CSV]]></attr>
+<attr name="__dataSourceDefinition"><![CDATA[D:/Naveen K Reddy/MnS/IDC/MULE/Others/InputFile.csv]]></attr>
+</Node>
+<Node enabled="enabled" guiName="Foreach 'InputFile' -&gt; 'mapMetadata'" guiX="460" guiY="20" id="FOREACH_INPUT_FILE_MAP_METADATA" transformClass="com.mulesoft.datamapper.transform.MelRecordTransform" type="REFORMAT">
+<attr name="melScript"><![CDATA[//MEL
+//START -> DO NOT REMOVE
+output.__id = num2str(input.__id);
+//END -> DO NOT REMOVE
+output.Id = str2integer(input.Id);
+output.Name = input.Name;
+output.Address = input.Address;
+output.Phone = str2integer(input.Phone);
+]]></attr>
+</Node>
+<Node cacheInMemory="true" enabled="enabled" fileURL="dict:outputPayload" guiName="Map&lt;k,v&gt; WRITER" guiX="900" guiY="20" id="MAP_WRITER0" type="MAP_WRITER">
+<attr name="mapping"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<clover:collection clover:name="mapMetadata" xmlns:clover="http://www.cloveretl.com/ns/xmlmapping">
+  <item clover:inPort="0">
+    <Id>$0.Id</Id>
+    <Name>$0.Name</Name>
+    <Address>$0.Address</Address>
+    <Phone>$0.Phone</Phone>
+  </item>
+</clover:collection>]]></attr>
+<attr name="_data_format"><![CDATA[MAP]]></attr>
+<attr name="__dataSourceDefinition"><![CDATA[D:/Naveen K Reddy/MnS/IDC/MULE/Others/Groovy Map.txt]]></attr>
+</Node>
+<Edge debugMode="true" fromNode="DATA_READER0:0" guiBendpoints="" id="Edge0" inPort="Port 0 (in)" metadata="734c3ec1-cae4-49e4-8c8f-ebf80cbbbda9" outPort="Port 0 (output)" toNode="FOREACH_INPUT_FILE_MAP_METADATA:0"/>
+<Edge debugMode="true" fromNode="FOREACH_INPUT_FILE_MAP_METADATA:0" guiBendpoints="" id="Edge1" inPort="Port 0 (in)" metadata="c88df77d-b653-4026-82c5-aa2fbaaeb5a8" outPort="Port 0 (out)" toNode="MAP_WRITER0:0"/>
+</Phase>
+</Graph>
